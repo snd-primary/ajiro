@@ -1,0 +1,29 @@
+#!/bin/sh
+# Pre-commit guardrails (CLAUDE.md, HANDOFF.md §11.4). Enable once per clone:
+#   git config core.hooksPath .githooks
+# Do not skip this with --no-verify; fix the cause instead.
+set -eu
+
+fail() {
+	echo "pre-commit: $*" >&2
+	exit 1
+}
+
+# 1. Observed data, samples and secrets never enter the repository, even
+#    when force-added past .gitignore.
+bad=$(git diff --cached --name-only --diff-filter=ACMR |
+	grep -E '\.(jsonl|jsonl\.gz|log|parquet|duckdb|duckdb\.wal|pem|key|token)$|(^|/)\.env(\..*)?$|^(data|logs|archive|dl|downloads)/' |
+	grep -vE '(^|/)\.env\.example$' || true)
+[ -z "$bad" ] || fail "refusing to commit data or secret files:
+$bad"
+
+# 2. Secrets in the staged changes.
+command -v gitleaks >/dev/null 2>&1 || fail "gitleaks not found (brew install gitleaks)"
+gitleaks git --pre-commit --staged --redact --no-banner --log-level warn . ||
+	fail "gitleaks found a possible secret"
+
+# 3. Guardrail tests (internal/guardrail).
+go test ./internal/guardrail >/dev/null || {
+	go test ./internal/guardrail >&2 || true
+	fail "guardrail tests failed"
+}

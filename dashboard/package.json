@@ -1,0 +1,23 @@
+{
+  "name": "ajiro-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env node_modules/vite/bin/vite.js dev",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@solidjs/web": "2.0.0-rc.18",
+    "@tanstack/solid-router": "2.0.0-rc.9",
+    "@tanstack/solid-start": "2.0.0-rc.9",
+    "solid-js": "2.0.0-rc.18",
+    "uplot": "1.6.32"
+  },
+  "devDependencies": {
+    "@solidjs/vite-plugin": "3.0.0-next.51",
+    "@types/node": "26.6.5",
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
+  }
+}

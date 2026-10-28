@@ -1,0 +1,31 @@
+# 観測データ・ログ・検体はリポジトリに絶対に入れない（HANDOFF.md §0-4, §11.4）
+*.jsonl
+*.jsonl.gz
+*.log
+*.parquet
+*.duckdb
+*.duckdb.wal
+logs/
+data/
+archive/
+dl/
+downloads/
+
+# secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.token
+
+# build / deps
+/bin/
+node_modules/
+dist/
+.output/
+.vinxi/
+.DS_Store
+
+# Claude Code (personal overrides)
+.claude/settings.local.json
